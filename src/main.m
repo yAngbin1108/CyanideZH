@@ -127,7 +127,7 @@ static void patch_image(const struct mach_header_64 *mh) {
     const uint8_t *base = (const uint8_t *)mh;
     uint32_t off = sizeof(struct mach_header_64);
     const struct section_64 *cfsec = NULL;
-    const struct segment_command_64 *cfseg = NULL;
+    
 
     for (uint32_t i = 0; i < mh->ncmds; i++) {
         const struct load_command *lc = (const struct load_command *)(base + off);
@@ -139,7 +139,6 @@ static void patch_image(const struct mach_header_64 *mh) {
                 so += sizeof(struct section_64);
                 if (strcmp(sec->sectname, "__cfstring") == 0 && !cfsec) {
                     cfsec = sec;
-                    cfseg = sg;
                 }
             }
         }

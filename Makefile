@@ -8,10 +8,10 @@ else
   SYSROOT := $(shell xcrun --sdk iphoneos --show-sdk-path 2>/dev/null | sed 's/^/-isysroot /')
 endif
 
-CC      ?= xcrun --sdk iphoneos clang
+CC      := xcrun --sdk iphoneos clang
 CFLAGS  := -target aarch64-apple-ios$(IOSMIN)$(ARCH) $(SYSROOT) \
            -std=gnu11 -Os -fPIC -Wall -Wno-unused-function
-LDFLAGS := -dynamiclib -install_name @rpath/CyanideZH.dylib -lobjc -Wl,-x
+LDFLAGS := -target aarch64-apple-ios$(IOSMIN)$(ARCH) $(SYSROOT) -dynamiclib -install_name @rpath/CyanideZH.dylib -lobjc -Wl,-x
 
 OBJS := main.o table.o
 
