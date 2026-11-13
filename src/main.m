@@ -103,17 +103,17 @@ static int make_writable(uintptr_t addr, size_t len) {
     vm_address_t end   = round_page(addr + len);
     vm_address_t cur   = start;
     while (cur < end) {
+        mach_port_t obj = MACH_PORT_NULL;
         vm_size_t sz = 0;
         vm_region_basic_info_data_64_t info;
                 mach_msg_type_number_t icnt = VM_REGION_BASIC_INFO_COUNT_64;
-        vm_region_flavor_t flav = VM_REGION_BASIC_INFO_64;
-        kern_return_t kr = vm_region_recurse_64(self, &flav, &cur, &sz,
-                                                (vm_region_recurse_info_t)&info, &icnt);
+        kern_return_t kr = vm_region_64(self, &cur, &sz, VM_REGION_BASIC_INFO_64,
+                                       (vm_region_info_t)&info, &icnt, &obj);
         if (kr != KERN_SUCCESS) return 0;
         if (sz == 0) return 0;
         if (!(info.protection & VM_PROT_WRITE)) {
             vm_prot_t want = info.protection | VM_PROT_WRITE;
-            if ((want & info.maxprot) != want) return 0;
+            if ((want & info.max_protection) != want) return 0;
             kr = vm_protect(self, cur, sz, FALSE, want);
             if (kr != KERN_SUCCESS) return 0;
         }
