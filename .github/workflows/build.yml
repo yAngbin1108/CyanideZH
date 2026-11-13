@@ -1,0 +1,31 @@
+name: build-dylib
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show toolchain
+        run: |
+          xcodebuild -version | head -2
+          xcrun --sdk iphoneos --show-sdk-path
+          clang --version | head -1
+
+      - name: Build arm64e dylib
+        run: make
+
+      - name: Inspect output
+        run: |
+          file CyanideZH.dylib
+          ls -la CyanideZH.dylib
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CyanideZH-arm64e
+          path: CyanideZH.dylib
+          if-no-files-found: error
