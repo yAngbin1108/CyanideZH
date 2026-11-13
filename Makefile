@@ -25,7 +25,7 @@ table.o: src/table.c src/cz_table.h
 
 CyanideZH.dylib: $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $(OBJS)
-	ldid -S $@ || codesign --force --sign - $@ || true
+	ldid -S $@ 2>/dev/null || codesign --force --sign - $@ 2>/dev/null || true
 
 clean:
 	rm -f $(OBJS) CyanideZH.dylib
